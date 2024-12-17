@@ -59,7 +59,7 @@ app.post("/pre-register", async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "Email saved successfully", data: savedEmail });
+      .json({ message: "Email saved successfully", data: savedEmail, status: 'success' });
   } catch (error) {
     console.error("[ERROR] Error occurred while saving email:", error);
 
