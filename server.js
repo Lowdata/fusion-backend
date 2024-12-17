@@ -10,8 +10,7 @@ app.use(cors()); // Enable CORS
 app.use(bodyParser.json()); // Parse JSON body
 
 // MongoDB Connection String
-const mongoURI =
-  "mongodb+srv://ayush:k6qjbAkiTRu4yYWK@cluster0.3gorv.mongodb.net/pre-registration?retryWrites=true&w=majority";
+const mongoURI =process.env.MONGOOSE;
 
 // Connect to MongoDB
 mongoose
