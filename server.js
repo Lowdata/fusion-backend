@@ -96,6 +96,70 @@ app.get("/posts", async (req, res) => {
   }
 });
 
+// PUT Endpoint to Update a Post
+app.put("/posts/:id", async (req, res) => {
+  console.log("[INFO] Received request to update post with ID:", req.params.id);
+  console.log("[INFO] Request body:", req.body);
+
+  try {
+    const { id } = req.params;
+    const { mediaHash, body, title, links } = req.body;
+
+    if (!mediaHash || !body || !title) {
+      console.warn("[WARN] Missing required fields in the request body");
+      return res
+        .status(400)
+        .json({ message: "mediaHash, body, and title are required" });
+    }
+
+    const updatedPost = await PostModel.findByIdAndUpdate(
+      id,
+      { mediaHash, body, title, links },
+      { new: true, runValidators: true } // Return the updated document and validate inputs
+    );
+
+    if (!updatedPost) {
+      console.warn("[WARN] No post found with the provided ID");
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    console.log("[INFO] Post updated successfully:", updatedPost);
+    res.status(200).json({
+      message: "Post updated successfully",
+      data: updatedPost,
+      status: "success",
+    });
+  } catch (error) {
+    console.error("[ERROR] Error occurred while updating post:", error);
+    res.status(500).json({ message: "Error updating post", error });
+  }
+});
+
+// DELETE Endpoint to Delete a Post
+app.delete("/posts/:id", async (req, res) => {
+  console.log("[INFO] Received request to delete post with ID:", req.params.id);
+
+  try {
+    const { id } = req.params;
+    const deletedPost = await PostModel.findByIdAndDelete(id);
+
+    if (!deletedPost) {
+      console.warn("[WARN] No post found with the provided ID");
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    console.log("[INFO] Post deleted successfully:", deletedPost);
+    res.status(200).json({
+      message: "Post deleted successfully",
+      data: deletedPost,
+      status: "success",
+    });
+  } catch (error) {
+    console.error("[ERROR] Error occurred while deleting post:", error);
+    res.status(500).json({ message: "Error deleting post", error });
+  }
+});
+
 // Admin Section
 const EmailSchema = new mongoose.Schema(
   {
